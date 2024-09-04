@@ -1,0 +1,111 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #efe9f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Splash Screen Styling */
+#splash-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+.splash-content {
+    text-align: center;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #555;
+    margin-top: 1rem;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    background-color: #f3f3f3;
+    transition: width 2s ease;
+}
+
+/* Login Page Styling */
+#login-page {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.login-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+input {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #333;
+    outline: none;
+}
+
+button {
+    padding: 0.75rem;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+.hidden {
+    display: none;
+}
