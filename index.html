@@ -3,39 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login with Splash Screen</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Make sure this CSS path is correct -->
 </head>
 <body>
+    <div id="background-scroll"></div>
 
-    <!-- Splash Screen -->
-    <div id="splash-screen">
-        <div class="splash-content">
-            <h1>Loading...</h1>
-            <div class="progress-bar">
-                <div class="progress"></div> <!-- Progress Bar Filling -->
-            </div>
-        </div>
+    <div class="login-container" id="login-container">
+        <h1>Login</h1>
+        <form id="login-form">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Login</button>
+            <p id="error-message" style="color: red; display: none;">Login failed. Please try again.</p>
+        </form>
     </div>
 
-    <!-- Login Page -->
-    <div id="login-page" class="hidden">
-        <div class="login-container">
-            <h1>Login</h1>
-            <form id="login-form">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+    <script>
+        // Handle form submission
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
 
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+            // Reset error message display
+            errorMessage.style.display = 'none';
 
-                <button type="submit">Login</button>
-                <p id="error-message" style="color: red; display: none;">Please fill in both fields.</p>
-            </form>
-        </div>
-    </div>
+            // Call the login API using localhost to get the Bearer token
+            fetch('https://localhost:7059/api/Auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API Response:', data); // Check the API response in the console
 
-    <script src="script.js"></script>
+                if (data.token) {
+                    // Store the token in local storage
+                    localStorage.setItem('jwtToken', data.token);
+
+                    // Automatically redirect to the dashboard page (or any other page) without inputting the token manually
+                    window.location.href = 'dashboard.html';
+                } else {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Login failed. Invalid credentials.';
+                }
+            })
+            .catch(error => {
+                console.error('Login Error:', error); 
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'An error occurred. Please try again later.';
+            });
+        });
+
+        // Function to automatically add token to API requests
+        function fetchWithToken(url, options = {}) {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                window.location.href = 'index.html'; // Redirect to login if no token
+            }
+
+            // Add the Authorization header with the Bearer token
+            options.headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`
+            };
+
+            return fetch(url, options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .catch(error => {
+                    console.error('API Error:', error);
+                    throw error;
+                });
+        }
+    </script>
 </body>
 </html>

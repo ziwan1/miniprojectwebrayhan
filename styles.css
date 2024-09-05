@@ -5,64 +5,39 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
+    height: 100%;
     font-family: 'Roboto', sans-serif;
-    background-color: #efe9f1;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    cursor: url('login.webp') 15 15, auto; /* Custom cursor with hotspot set to (15,15) */
 }
 
-/* Splash Screen Styling */
-#splash-screen {
-    position: absolute;
+/* Static Background Gradient (Non-Animated) */
+#background-scroll {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #333;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 1;
-    transition: opacity 0.5s ease-out;
-}
-
-.splash-content {
-    text-align: center;
-}
-
-/* Progress Bar */
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background-color: #555;
-    margin-top: 1rem;
-}
-
-.progress {
-    width: 0;
-    height: 100%;
-    background-color: #f3f3f3;
-    transition: width 2s ease;
+    background: linear-gradient(135deg, #6a11cb, #2575fc, #ff6a00, #ee0979);
+    background-size: cover;
+    z-index: -1;
 }
 
 /* Login Page Styling */
-#login-page {
-    opacity: 0;
-    transition: opacity 0.5s ease-out;
-}
-
 .login-container {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.75); /* Increased transparency */
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
     text-align: center;
+    z-index: 1; /* Ensure the login container is above the background */
+    margin: auto; /* Ensure it's perfectly centered */
+    position: relative;
 }
 
 form {
@@ -104,8 +79,4 @@ button {
 button:hover {
     background-color: #444;
     transform: scale(1.05);
-}
-
-.hidden {
-    display: none;
 }

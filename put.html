@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Todo</title>
+    <link rel="stylesheet" href="put.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Update Todo</h1>
+        <form id="updateTodoForm">
+            <!-- Todo ID (read-only for display) -->
+            <div class="form-group">
+                <label for="todoId">Todo ID</label>
+                <input type="text" id="todoId" name="todoId" required>
+            </div>
+
+            <!-- Day -->
+            <div class="form-group">
+                <label for="todoDay">Day</label>
+                <input type="text" id="todoDay" name="todoDay" required>
+            </div>
+
+            <!-- Note -->
+            <div class="form-group">
+                <label for="todoNote">Note</label>
+                <input type="text" id="todoNote" name="todoNote" required>
+            </div>
+
+            <!-- Detail Count -->
+            <div class="form-group">
+                <label for="detailCount">Detail Count</label>
+                <input type="number" id="detailCount" name="detailCount" required>
+            </div>
+
+            <!-- Todo Details -->
+            <div id="todoDetailsContainer" class="scrollable-area">
+                <label>Todo Details</label>
+                <div class="todoDetail">
+                    <div class="form-group">
+                        <label for="activity1">Activity</label>
+                        <input type="text" id="activity1" name="activity1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category1">Category</label>
+                        <input type="text" id="category1" name="category1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="detailNote1">Detail Note</label>
+                        <textarea id="detailNote1" name="detailNote1" rows="3" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="addDetailButton" class="btn">Add More Details</button>
+            <button type="submit" class="btn">Update Todo</button>
+        </form>
+    </div>
+
+    <script>
+        const addDetailButton = document.getElementById('addDetailButton');
+        const todoDetailsContainer = document.getElementById('todoDetailsContainer');
+        let detailIndex = 1; // Start index for todoDetail entries
+
+        // Add more todoDetail inputs when the "Add More Details" button is clicked
+        addDetailButton.addEventListener('click', () => {
+            detailIndex++;
+            const todoDetail = document.createElement('div');
+            todoDetail.classList.add('todoDetail');
+            todoDetail.innerHTML = `
+                <div class="form-group">
+                    <label for="activity${detailIndex}">Activity</label>
+                    <input type="text" id="activity${detailIndex}" name="activity${detailIndex}" required>
+                </div>
+                <div class="form-group">
+                    <label for="category${detailIndex}">Category</label>
+                    <input type="text" id="category${detailIndex}" name="category${detailIndex}" required>
+                </div>
+                <div class="form-group">
+                    <label for="detailNote${detailIndex}">Detail Note</label>
+                    <textarea id="detailNote${detailIndex}" name="detailNote${detailIndex}" rows="3" required></textarea>
+                </div>
+            `;
+            todoDetailsContainer.appendChild(todoDetail);
+        });
+
+        const updateTodo = async (id, updatedData) => {
+            const response = await fetch(`https://localhost:7059/api/v1/todo/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                },
+                body: JSON.stringify(updatedData)
+            });
+            if (response.status === 204) {
+                alert('Todo Updated!');
+            }
+        };
+
+        // Gather the form data and update the todo
+        document.getElementById('updateTodoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const todoDetails = [];
+
+            // Loop through the todoDetail entries to collect all the detail fields
+            for (let i = 1; i <= detailIndex; i++) {
+                todoDetails.push({
+                    todoDetailId: crypto.randomUUID(), // Auto-generate a UUID for each detail
+                    activity: document.getElementById(`activity${i}`).value,
+                    category: document.getElementById(`category${i}`).value,
+                    detailNote: document.getElementById(`detailNote${i}`).value
+                });
+            }
+
+            const updatedData = {
+                todoId: document.getElementById('todoId').value,
+                day: document.getElementById('todoDay').value,
+                todayDate: new Date().toISOString(),
+                note: document.getElementById('todoNote').value,
+                detailCount: parseInt(document.getElementById('detailCount').value),
+                todoDetails: todoDetails
+            };
+
+            const id = document.getElementById('todoId').value;
+            updateTodo(id, updatedData);
+        });
+    </script>
+</body>
+</html>

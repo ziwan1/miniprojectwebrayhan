@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Todo</title>
+    <link rel="stylesheet" href="delete.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Delete Todo</h1>
+        <form id="deleteTodoForm">
+            <!-- Todo ID -->
+            <div class="form-group">
+                <label for="todoId">Todo ID</label>
+                <input type="text" id="todoId" name="todoId" required>
+            </div>
+
+            <button type="submit" class="btn">Delete Todo</button>
+        </form>
+    </div>
+
+    <script>
+        const deleteTodo = async (id) => {
+            const response = await fetch(`https://localhost:7059/api/v1/todo/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken') // Include Bearer token
+                }
+            });
+            if (response.ok) {
+                alert('Todo Deleted!');
+            } else {
+                alert('Todo Not Found!');
+            }
+        };
+
+        document.getElementById('deleteTodoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('todoId').value;
+            deleteTodo(id);
+        });
+    </script>
+</body>
+</html>
